@@ -23,8 +23,17 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 # Instalando Ollama
 docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
 
-# Corriendo el modelo llama 3
-docker exec -it ollama ollama run llama3
-
 # Instalando interfaz web
-docker run -d --name deepseek -p 80:8080  -v open-webui:/app/backend/data -e WEBUI_AUTH=False -e OLLAMA_BASE_URL=http://localhost:11434  ghcr.io/open-webui/open-webui:main
+docker run -d --name webui -p 80:8080  -v open-webui:/app/backend/data -e WEBUI_AUTH=False -e OLLAMA_BASE_URL=http://localhost:11434  ghcr.io/open-webui/open-webui:main
+
+# Habilitar puerto openwebui
+iptables -A OUTPUT -p tcp --dport 8080 -j ACCEPT
+iptables -A INPUT  -p tcp --sport 8080 -m state --state ESTABLISHED -j ACCEPT
+
+# Guardar los cambios en iptables
+iptables-save > /etc/iptables/rules.v4
+
+# Corriendo el modelos
+docker exec -it ollama ollama pull qwen3:0.6b ; ollama pull tinyllama:1.1b ; ollama pull gemma3:1b ; ollama pull smollm:1.7b ; ollama pull deepseek-r1:1.5b 
+
+
