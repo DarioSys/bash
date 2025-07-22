@@ -26,7 +26,7 @@ docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
 # Instalando interfaz web
 docker run -d --name webui -p 80:8080  -v open-webui:/app/backend/data -e WEBUI_AUTH=False -e OLLAMA_BASE_URL=http://localhost:11434  ghcr.io/open-webui/open-webui:main
 
-# Habilitar puerto openwebui
+# Habilitar puerto openwebui, solo si esucha por la interfaz de una red creada diferente a la por defecto docker0
 iptables -A OUTPUT -p tcp --dport 8080 -j ACCEPT
 iptables -A INPUT  -p tcp --sport 8080 -m state --state ESTABLISHED -j ACCEPT
 
